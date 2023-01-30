@@ -8,10 +8,10 @@ class Menu:
         self.items: list[dict[str]] = list()
         self.read_menu()
 
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Menu, cls).__new__(cls)
-        return cls.instance
+    # def __new__(cls):
+    #     if not hasattr(cls, 'instance'):
+    #         cls.instance = super(Menu, cls).__new__(cls)
+    #     return cls.instance
 
     def __str__(self):
         items_str = list()
@@ -53,5 +53,7 @@ class Menu:
                 writer.writerow(item)
 
 
+Menu = Menu()
+
 if __name__ == "__main__":
-    print(Menu())
+    print(Menu)

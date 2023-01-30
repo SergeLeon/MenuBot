@@ -1,7 +1,6 @@
 import logging
 from telegram.ext import (
     ApplicationBuilder,
-    CallbackQueryHandler,
     CommandHandler,
     MessageHandler,
     filters,
@@ -9,6 +8,7 @@ from telegram.ext import (
 
 import config
 import handlers
+from services import auth
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 def main():
     application = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()
+    # TODO: Разобраться как вытащить имя бота
+    # auth.print_qr(auth.generate_invite(bot_name))
 
     COMMAND_HANDLERS = (
         CommandHandler(callback=handlers.start, command="start"),
@@ -37,5 +39,3 @@ if __name__ == "__main__":
         import traceback
 
         logger.warning(traceback.format_exc())
-    finally:
-        close_db()
