@@ -1,5 +1,4 @@
 from uuid import uuid4
-import qrcode
 
 
 def _generate_code() -> str:
@@ -14,9 +13,3 @@ def generate_invite(bot_name: str) -> str:
 
 
 def check_code(code) -> bool: ...
-
-
-def print_qr(data) -> None:
-    qr = qrcode.QRCode(border=1)
-    qr.add_data(data)
-    qr.print_ascii()
