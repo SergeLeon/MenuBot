@@ -12,7 +12,7 @@ async def send_response(
     keyboard: InlineKeyboardMarkup | None = None,
 ) -> None:
     args = {
-        "chat_id": _get_chat_id(update),
+        "chat_id": get_chat_id(update),
         "disable_web_page_preview": True,
         "text": response,
         "parse_mode": telegram.constants.ParseMode.HTML,
@@ -23,5 +23,5 @@ async def send_response(
     await context.bot.send_message(**args)
 
 
-def _get_chat_id(update: Update) -> int:
+def get_chat_id(update: Update) -> int:
     return cast(Chat, update.effective_chat).id
