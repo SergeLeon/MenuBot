@@ -1,6 +1,9 @@
 from csv import DictReader, DictWriter
 
 from config import MENU_CSV
+import logger
+
+logger = logger.get_logger(__name__)
 
 
 class Menu:
@@ -42,6 +45,7 @@ class Menu:
         for item in menu:
             item["active"] = int(item["active"]) if item["active"].isnumeric() else 1
         self.items = menu
+        logger.debug(f"Menu read from: {MENU_CSV}")
 
     def save_menu(self) -> None:
         with open(MENU_CSV, "w", newline='') as csv_file:
@@ -51,6 +55,7 @@ class Menu:
             writer.writeheader()
             for item in self.items:
                 writer.writerow(item)
+        logger.debug(f"Menu saved to: {MENU_CSV}")
 
 
 Menu = Menu()

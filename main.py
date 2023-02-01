@@ -1,4 +1,3 @@
-import logging
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -7,24 +6,25 @@ from telegram.ext import (
 )
 
 import config
-import handlers
+import logger
 
+logger = logger.setup_applevel_logger()
+
+import handlers
 from services import admin, auth, qr
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
 
-
-def first_init():
+def first_admin_init():
     admin_invite = auth.generate_invite()
     print(admin_invite)
     print(qr.as_str(admin_invite))
 
 
 def main():
-    first_init()
+    logger.info("Application initialization")
+
+    if not admin.get_all():
+        first_admin_init()
 
     application = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()
 
