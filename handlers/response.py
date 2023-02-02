@@ -10,6 +10,7 @@ async def send_response(
     context: ContextTypes.DEFAULT_TYPE,
     response: str,
     keyboard: InlineKeyboardMarkup | None = None,
+    **kwargs
 ) -> None:
     args = {
         "chat_id": get_chat_id(update),
@@ -20,7 +21,7 @@ async def send_response(
     if keyboard:
         args["reply_markup"] = keyboard
 
-    await context.bot.send_message(**args)
+    await context.bot.send_message(**args, **kwargs)
 
 
 def get_chat_id(update: Update) -> int:
