@@ -2,6 +2,7 @@ from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler,
     filters,
 )
 
@@ -28,16 +29,19 @@ def main():
 
     application = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()
 
-    COMMAND_HANDLERS = (
+    HANDLERS = (
         CommandHandler(callback=handlers.start, command="start"),
 
         CommandHandler(callback=handlers.edit_menu, command="edit", filters=admin.Filter),
         CommandHandler(callback=handlers.add_admin, command="hire", filters=admin.Filter),
         CommandHandler(callback=handlers.delete_admin, command="fire", filters=admin.Filter),
 
+        CallbackQueryHandler(callback=handlers.delete_admin_button,
+                             pattern=f"{config.ADMIN_DELETE_CALLBACK_PATTERN}.*"),
+
         MessageHandler(callback=handlers.send_menu, filters=filters.BaseFilter()),
     )
-    for handler in COMMAND_HANDLERS:
+    for handler in HANDLERS:
         application.add_handler(handler)
 
     application.run_polling()

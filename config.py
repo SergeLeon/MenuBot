@@ -13,3 +13,5 @@ TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 BOT_NAME = requests.get(f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/getMe').json()["result"]["username"]
 
 MENU_CSV = os.environ.get('MENU_CSV')
+
+ADMIN_DELETE_CALLBACK_PATTERN = "admin_delete_"

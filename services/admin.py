@@ -5,7 +5,7 @@ import logger
 
 logger = logger.get_logger(__name__)
 
-admins = set()  # TODO: Сделать сохранение админов
+admins = list()  # TODO: Сделать сохранение админов
 
 
 class Filter(MessageFilter):
@@ -15,7 +15,7 @@ class Filter(MessageFilter):
 
 
 def create(user_id) -> None:
-    admins.add(user_id)
+    admins.append(user_id)
     logger.debug(f"Added admin: {user_id}")
 
 
@@ -24,5 +24,5 @@ def delete(user_id) -> None:
     logger.debug(f"Deleted admin: {user_id}")
 
 
-def get_all() -> tuple:
-    return tuple(admins)
+def get_all() -> list:
+    return admins.copy()
