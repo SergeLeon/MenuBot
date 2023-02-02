@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes
 
 from .response import send_response
 from services.menu import Menu
-from services import admin, auth
+from services import admin, auth, qr
 from handlers.response import get_chat_id
 
 
@@ -25,7 +25,10 @@ def _get_code(update: Update) -> str:
 
 
 async def add_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    ...
+    user_id = get_chat_id(update)
+    admin_invite = auth.generate_invite()
+    await send_response(update, context, f"Приглашение админа:\n{admin_invite}")
+    await context.bot.send_photo(user_id, qr.as_bites(admin_invite).getvalue())
 
 
 async def delete_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
