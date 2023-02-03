@@ -25,16 +25,15 @@ async def edit_choice(
         to_string: Callable = None,
         text: str = None
 ) -> None:
-    if text is None:
+    keyboard = get_keyboard(items, callback_prefix, to_string)
+    message = query.message
+
+    if message.text == text and message.reply_markup == keyboard:
+        return
+
+    if not text:
         text = query.message.text
-    await query.edit_message_text(
-        text=text,
-        reply_markup=get_keyboard(
-            items,
-            callback_prefix,
-            to_string
-        )
-    )
+    await query.edit_message_text(text=text, reply_markup=keyboard)
 
 
 def get_keyboard(
