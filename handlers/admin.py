@@ -26,11 +26,16 @@ async def delete_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def delete_admin_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = get_chat_id(update)
+    if not admin.is_admin(user_id):
+        await send_response(update, context, f"Недостаточно полномочий.")
+        return
+
     query = await get_query(update)
     user_choice = await get_user_choice(query, config.ADMIN_DELETE_CALLBACK_PATTERN)
     admin_id = admin.get_all()[user_choice]
-    if admin_id == get_chat_id(update):
-        await send_response(update, context, f"Нельзя разжаловать себя.")
+    if admin_id == user_id:
+        await update_delete_admin_button(query, f"Нельзя разжаловать себя.")
     else:
         admin.delete(admin_id)
         await update_delete_admin_button(query, f"Админ {admin_id} разжалован.")

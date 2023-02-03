@@ -11,7 +11,7 @@ admins = list()  # TODO: Сделать сохранение админов
 class Filter(MessageFilter):
     @staticmethod
     def check_update(update):
-        return get_chat_id(update) in admins
+        return is_admin(get_chat_id(update))
 
 
 def create(user_id) -> None:
@@ -26,3 +26,7 @@ def delete(user_id) -> None:
 
 def get_all() -> list:
     return admins.copy()
+
+
+def is_admin(user_id):
+    return user_id in admins
