@@ -20,7 +20,7 @@ async def delete_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         update=update,
         context=context,
         callback_prefix=config.ADMIN_DELETE_CALLBACK_PATTERN,
-        title="Выбор админа для удаления",
+        text="Выбор админа для удаления",
         items=admins,
     )
 
