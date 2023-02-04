@@ -9,23 +9,25 @@ from handlers.response import send_response
 async def send_choice(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
+        text: str,
         callback_prefix: str,
-        title: str,
         items: Iterable,
         to_string: Callable = None,
+        to_index: Callable = None
 ) -> None:
-    keyboard = get_keyboard(items, callback_prefix, to_string)
-    await send_response(update, context, title, keyboard)
+    keyboard = get_keyboard(items, callback_prefix, to_string, to_index)
+    await send_response(update, context, text, keyboard)
 
 
 async def edit_choice(
         query,
-        items: Iterable,
+        text: str,
         callback_prefix: str,
+        items: Iterable,
         to_string: Callable = None,
-        text: str = None
+        to_index: Callable = None
 ) -> None:
-    keyboard = get_keyboard(items, callback_prefix, to_string)
+    keyboard = get_keyboard(items, callback_prefix, to_string, to_index)
     message = query.message
 
     if message.text == text and message.reply_markup == keyboard:
@@ -39,10 +41,14 @@ async def edit_choice(
 def get_keyboard(
         items: Iterable,
         callback_prefix: str,
-        to_string: Callable
+        to_string: Callable = None,
+        to_index: Callable = None
 ) -> InlineKeyboardMarkup:
     if to_string is None:
         to_string = str
+
+    if to_index is None:
+        to_index = enumerate
 
     buttons = [
         [
@@ -50,7 +56,7 @@ def get_keyboard(
                 text=to_string(item),
                 callback_data=f"{callback_prefix}{index}")
         ]
-        for index, item in enumerate(items)
+        for index, item in to_index(items)
     ]
     keyboard = InlineKeyboardMarkup(buttons)
     return keyboard

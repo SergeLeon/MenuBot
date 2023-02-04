@@ -9,7 +9,7 @@ async def send_response(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
     response: str,
-    keyboard: InlineKeyboardMarkup | None = None,
+    reply_markup=None,
     **kwargs
 ) -> None:
     args = {
@@ -18,8 +18,8 @@ async def send_response(
         "text": response,
         "parse_mode": telegram.constants.ParseMode.HTML,
     }
-    if keyboard:
-        args["reply_markup"] = keyboard
+    if reply_markup:
+        args["reply_markup"] = reply_markup
 
     await context.bot.send_message(**args, **kwargs)
 
