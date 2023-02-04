@@ -56,10 +56,10 @@ def get_keyboard(
     return keyboard
 
 
-async def get_user_choice(query, prefix: str) -> int | None:
+async def get_user_choice(query, prefix: str) -> str | None:
     if not _check_query(query):
         return None
-    user_choice = int(query.data.replace(prefix, ""))
+    user_choice = query.data.replace(prefix, "")
     return user_choice
 
 

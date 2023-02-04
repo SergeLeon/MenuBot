@@ -33,7 +33,7 @@ async def delete_admin_button(update: Update, context: ContextTypes.DEFAULT_TYPE
 
     query = await get_query(update)
     user_choice = await get_user_choice(query, config.ADMIN_DELETE_CALLBACK_PATTERN)
-    admin_id = admin.get_all()[user_choice]
+    admin_id = admin.get_all()[int(user_choice)]
     if admin_id == user_id:
         await update_delete_admin_button(query, f"Нельзя разжаловать себя.")
     else:
