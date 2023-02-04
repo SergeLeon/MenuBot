@@ -31,13 +31,19 @@ def main():
 
     HANDLERS = (
         CommandHandler(callback=handlers.start, command="start"),
+        CommandHandler(callback=handlers.send_menu, command="menu"),
 
-        CommandHandler(callback=handlers.edit_menu, command="edit", filters=admin.Filter),
         CommandHandler(callback=handlers.add_admin, command="hire", filters=admin.Filter),
         CommandHandler(callback=handlers.delete_admin, command="fire", filters=admin.Filter),
-
         CallbackQueryHandler(callback=handlers.delete_admin_button,
                              pattern=f"{config.ADMIN_DELETE_CALLBACK_PATTERN}.*"),
+
+        CommandHandler(callback=handlers.edit_menu, command="edit", filters=admin.Filter),
+        CallbackQueryHandler(callback=handlers.edit_menu_button,
+                             pattern=f"{config.EDIT_MENU_CALLBACK_PATTERN}.*"),
+        CallbackQueryHandler(callback=handlers.edit_item_button,
+                             pattern=f"{config.EDIT_ITEM_CALLBACK_PATTERN}.*"),
+        MessageHandler(callback=handlers.edit_item, filters=admin.Filter),
 
         MessageHandler(callback=handlers.send_menu, filters=filters.BaseFilter()),
     )
