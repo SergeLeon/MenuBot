@@ -14,6 +14,12 @@ MENU_BUTTON = "Меню"
 
 MENU_BACK_BUTTON = "Назад"
 
+MENU_CREATE_ITEM_BUTTON = "Создать"
+
+MENU_DELETE_ITEM_BUTTON = "Удалить"
+
+MENU_ITEM_SAMPLE = "Новый"
+
 SELECT_ITEM_TO_EDIT = "Выберите элемент для редактирования:"
 
 SELECT_FIELD_TO_EDIT = "Выбор поля:"

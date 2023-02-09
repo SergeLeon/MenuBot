@@ -38,12 +38,24 @@ def _get_edit_menu_keyboard():
     menu = Menu
 
     buttons = [
+        *[
+            KeyboardButton(
+                text=_get_menu_item_name_activiti(admin_id),
+                data=str(index),
+                callback_prefix=config.EDIT_MENU_CALLBACK_PATTERN
+            )
+            for index, admin_id in enumerate(menu)
+        ],
         KeyboardButton(
-            text=_get_menu_item_name_activiti(admin_id),
-            data=str(index),
+            text=message_templates.MENU_CREATE_ITEM_BUTTON,
+            data="create",
             callback_prefix=config.EDIT_MENU_CALLBACK_PATTERN
-        )
-        for index, admin_id in enumerate(menu)
+        ),
+        KeyboardButton(
+            text=message_templates.MENU_DELETE_ITEM_BUTTON,
+            data="delete",
+            callback_prefix=config.EDIT_MENU_CALLBACK_PATTERN
+        ),
     ]
 
     keyboard = get_keyboard(buttons)
@@ -65,7 +77,28 @@ async def edit_menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = await get_query(update)
     user_choice = await get_user_choice(query, config.EDIT_MENU_CALLBACK_PATTERN)
 
-    await update_edit_menu_button(query, int(user_choice), message_templates.SELECT_FIELD_TO_EDIT)
+    if user_choice == "create":
+        _create_menu_item()
+        await update_edit_menu(query)
+    elif user_choice == "delete":
+        pass
+    else:
+        await update_edit_menu_button(query, int(user_choice), message_templates.SELECT_FIELD_TO_EDIT)
+
+
+def _create_menu_item():
+    blank_item = dict()
+
+    keys = tuple(Menu[0])
+
+    for key in keys:
+        blank_item[key] = None
+
+    blank_item[keys[0]] = message_templates.MENU_ITEM_SAMPLE
+    blank_item[keys[-1]] = 0
+
+    Menu.append(blank_item)
+    Menu.save()
 
 
 async def update_edit_menu_button(query, chosen_item_index, text: str):

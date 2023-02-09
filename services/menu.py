@@ -27,6 +27,9 @@ class Menu:
     def __getitem__(self, item):
         return self.items[item]
 
+    def append(self, item):
+        self.items.append(item)
+
     def read(self):
         with open(MENU_CSV, "r") as csv_file:
             reader = DictReader(csv_file)
