@@ -25,6 +25,15 @@ async def edit_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def update_edit_menu(query):
+    keyboard = _get_edit_menu_keyboard()
+    await edit_choice(
+        query=query,
+        text=message_templates.SELECT_ITEM_TO_EDIT,
+        keyboard=keyboard
+    )
+
+
 def _get_edit_menu_keyboard():
     menu = Menu
 
@@ -72,12 +81,19 @@ def _get_edit_item_keyboard(chosen_item_index):
     menu_item = Menu[chosen_item_index]
 
     buttons = [
+        *[
+            KeyboardButton(
+                text=f"{item_field} : {menu_item[item_field]}",
+                data=f"{chosen_item_index}_{item_field}",
+                callback_prefix=config.EDIT_ITEM_CALLBACK_PATTERN
+            )
+            for item_field in menu_item
+        ],
         KeyboardButton(
-            text=f"{item_field} : {menu_item[item_field]}",
-            data=f"{chosen_item_index}_{item_field}",
+            text=message_templates.MENU_BACK_BUTTON,
+            data="back",
             callback_prefix=config.EDIT_ITEM_CALLBACK_PATTERN
         )
-        for item_field in menu_item
     ]
 
     keyboard = get_keyboard(buttons)
@@ -92,6 +108,10 @@ async def edit_item_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = await get_query(update)
     user_choice = await get_user_choice(query, config.EDIT_ITEM_CALLBACK_PATTERN)
+
+    if user_choice == "back":
+        await update_edit_menu(query)
+        return
 
     menu_index, field_name = user_choice.split("_")
     await send_response(
