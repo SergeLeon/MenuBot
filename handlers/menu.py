@@ -5,6 +5,7 @@ import config
 import message_templates
 from services import admin
 from services.menu import Menu
+from handlers.keyboard import get_keyboard, KeyboardButton
 from handlers.response import send_response, get_chat_id
 from handlers.choice import send_choice, edit_choice, get_user_choice, get_query
 
@@ -15,14 +16,35 @@ async def send_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def edit_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = _get_edit_menu_keyboard()
     await send_choice(
         update=update,
         context=context,
-        callback_prefix=config.EDIT_MENU_CALLBACK_PATTERN,
         text=message_templates.SELECT_ITEM_TO_EDIT,
-        items=Menu,
-        to_string=_get_dict_first_and_active_str
+        keyboard=keyboard
     )
+
+
+def _get_edit_menu_keyboard():
+    menu = Menu
+
+    buttons = [
+        KeyboardButton(
+            text=_get_menu_item_name_activiti(admin_id),
+            data=str(index),
+            callback_prefix=config.EDIT_MENU_CALLBACK_PATTERN
+        )
+        for index, admin_id in enumerate(menu)
+    ]
+
+    keyboard = get_keyboard(buttons)
+    return keyboard
+
+
+def _get_menu_item_name_activiti(item):
+    values = tuple(item.values())
+    string = f"{values[0]} {'✅' if values[-1] else '❌'}"
+    return string
 
 
 async def edit_menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -38,15 +60,28 @@ async def edit_menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def update_edit_menu_button(query, chosen_item_index, text: str):
-    menu_item = Menu[chosen_item_index]
+    keyboard = _get_edit_item_keyboard(chosen_item_index)
     await edit_choice(
         query=query,
-        items=menu_item,
-        callback_prefix=config.EDIT_ITEM_CALLBACK_PATTERN,
         text=text,
-        to_string=lambda item: f"{item} : {menu_item[item]}",
-        to_index=lambda items: ((f"{chosen_item_index}_{item}", item) for item in items)
+        keyboard=keyboard
     )
+
+
+def _get_edit_item_keyboard(chosen_item_index):
+    menu_item = Menu[chosen_item_index]
+
+    buttons = [
+        KeyboardButton(
+            text=f"{item_field} : {menu_item[item_field]}",
+            data=f"{chosen_item_index}_{item_field}",
+            callback_prefix=config.EDIT_ITEM_CALLBACK_PATTERN
+        )
+        for item_field in menu_item
+    ]
+
+    keyboard = get_keyboard(buttons)
+    return keyboard
 
 
 async def edit_item_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -72,7 +107,7 @@ async def edit_item(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_menu(update, context)
         return
 
-    menu_index, field_name = reply_message.text.split()[-2:]
+    menu_index, field_name = reply_message.text.replace(":", "").split()[-2:]
     user_input = update.message.text
     if user_input.isnumeric():
         user_input = int(user_input)
@@ -88,13 +123,3 @@ async def edit_item(update: Update, context: ContextTypes.DEFAULT_TYPE):
             field_name=field_name,
             value=user_input)
     )
-
-
-def _get_dict_first_and_active_str(item):
-    values = tuple(item.values())
-    string = f"{values[0]} {'✅' if values[-1] else '❌'}"
-    return string
-
-
-def _dict_item_to_str(item):
-    return tuple(item.values())[0]
