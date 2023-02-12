@@ -80,8 +80,14 @@ async def edit_menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_choice == "create":
         _create_menu_item()
         await update_edit_menu(query)
+
     elif user_choice == "delete":
-        pass
+        await delete_menu_item_choice(query)
+    elif "delete_" in user_choice:
+        delete_index = int(user_choice.replace("delete_", ""))
+        _delete_menu_item(delete_index)
+        await update_edit_menu(query)
+
     else:
         await update_edit_menu_button(query, int(user_choice), message_templates.SELECT_FIELD_TO_EDIT)
 
@@ -99,6 +105,43 @@ def _create_menu_item():
 
     Menu.append(blank_item)
     Menu.save()
+
+
+def _delete_menu_item(index):
+    del Menu[index]
+    Menu.save()
+
+
+async def delete_menu_item_choice(query):
+    keyboard = _get_delete_menu_item_keyboard()
+    await edit_choice(
+        query=query,
+        text=message_templates.SELECT_ITEM_TO_DELETE,
+        keyboard=keyboard
+    )
+
+
+def _get_delete_menu_item_keyboard():
+    menu = Menu
+
+    buttons = [
+        *[
+            KeyboardButton(
+                text=_get_menu_item_name_activiti(admin_id),
+                data=f"delete_{index}",
+                callback_prefix=config.EDIT_MENU_CALLBACK_PATTERN
+            )
+            for index, admin_id in enumerate(menu)
+        ],
+        KeyboardButton(
+            text=message_templates.MENU_BACK_BUTTON,
+            data="back",
+            callback_prefix=config.EDIT_ITEM_CALLBACK_PATTERN
+        )
+    ]
+
+    keyboard = get_keyboard(buttons)
+    return keyboard
 
 
 async def update_edit_menu_button(query, chosen_item_index, text: str):

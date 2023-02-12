@@ -30,6 +30,9 @@ class Menu:
     def append(self, item):
         self.items.append(item)
 
+    def __delitem__(self, key):
+        del self.items[key]
+
     def read(self):
         with open(MENU_CSV, "r") as csv_file:
             reader = DictReader(csv_file)

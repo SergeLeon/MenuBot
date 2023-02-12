@@ -22,6 +22,8 @@ MENU_ITEM_SAMPLE = "Новый"
 
 SELECT_ITEM_TO_EDIT = "Выберите элемент для редактирования:"
 
+SELECT_ITEM_TO_DELETE = "Выберите элемент для удаления:"
+
 SELECT_FIELD_TO_EDIT = "Выбор поля:"
 
 INPUT_FIELD_VALUE = "Введите новое значение для поля {menu_index} {field_name}:"
