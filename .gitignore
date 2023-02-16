@@ -3,4 +3,5 @@ __pycache__
 *env
 *.log
 *.csv
+admins.json
 db.sqlite3
