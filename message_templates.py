@@ -10,6 +10,8 @@ ADMIN_FIRED = "Админ {admin} разжалован."
 
 ADMIN_INITED = "Пользователь инициализирован как админ."
 
+ALREADY_ADMIN = "Пользователь уже админ."
+
 MENU_BUTTON = "Меню"
 
 MENU_BACK_BUTTON = "Назад"
